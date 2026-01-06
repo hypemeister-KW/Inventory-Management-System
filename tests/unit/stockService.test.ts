@@ -42,20 +42,25 @@ describe('Stock Service', () => {
         it('should decrease stock successfully', async () => {
             const mockProduct = {
                 _id: '123',
-                stock: 10,
-                save: jest.fn().mockResolvedValue(true)
+                stock: 5,
+                name: 'Test Product',
+                price: 10
             } as any;
-            (Product.findById as jest.Mock).mockResolvedValue(mockProduct);
+            (Product.findOneAndUpdate as jest.Mock).mockResolvedValue(mockProduct);
 
-            await stockService.decreaseStock('123', 5);
+            const result = await stockService.decreaseStock('123', 5);
 
-            expect(mockProduct.stock).toBe(5);
-            expect(mockProduct.save).toHaveBeenCalled();
+            expect(Product.findOneAndUpdate).toHaveBeenCalledWith(
+                { _id: '123', stock: { $gte: 5 } },
+                { $inc: { stock: -5 } },
+                expect.any(Object)
+            );
+            expect(result).toEqual(mockProduct);
         });
 
         it('should throw error when stock is insufficient', async () => {
-            const mockProduct = { _id: '123', stock: 3 } as any;
-            (Product.findById as jest.Mock).mockResolvedValue(mockProduct);
+            (Product.findOneAndUpdate as jest.Mock).mockResolvedValue(null);
+            (Product.findById as jest.Mock).mockResolvedValue({ _id: '123', stock: 3 });
 
             await expect(
                 stockService.decreaseStock('123', 5)
@@ -63,6 +68,7 @@ describe('Stock Service', () => {
         });
 
         it('should throw error when product not found', async () => {
+            (Product.findOneAndUpdate as jest.Mock).mockResolvedValue(null);
             (Product.findById as jest.Mock).mockResolvedValue(null);
 
             await expect(
@@ -75,19 +81,24 @@ describe('Stock Service', () => {
         it('should increase stock successfully', async () => {
             const mockProduct = {
                 _id: '123',
-                stock: 10,
-                save: jest.fn().mockResolvedValue(true)
+                stock: 15,
+                name: 'Test Product',
+                price: 10
             } as any;
-            (Product.findById as jest.Mock).mockResolvedValue(mockProduct);
+            (Product.findByIdAndUpdate as jest.Mock).mockResolvedValue(mockProduct);
 
-            await stockService.increaseStock('123', 5);
+            const result = await stockService.increaseStock('123', 5);
 
-            expect(mockProduct.stock).toBe(15);
-            expect(mockProduct.save).toHaveBeenCalled();
+            expect(Product.findByIdAndUpdate).toHaveBeenCalledWith(
+                '123',
+                { $inc: { stock: 5 } },
+                expect.any(Object)
+            );
+            expect(result).toEqual(mockProduct);
         });
 
         it('should throw error when product not found', async () => {
-            (Product.findById as jest.Mock).mockResolvedValue(null);
+            (Product.findByIdAndUpdate as jest.Mock).mockResolvedValue(null);
 
             await expect(
                 stockService.increaseStock('123', 5)

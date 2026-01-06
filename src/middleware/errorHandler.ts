@@ -1,12 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 
-//@ts-ignore: This is a workaround to allow the error to be extended
+
 interface ErrorWithStatus extends Error {
     statusCode?: number;
     code?: number;
-    name?: string;
     errors?: any;
-    stack?: string;
 }
 
 
