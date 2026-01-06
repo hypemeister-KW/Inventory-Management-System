@@ -1,0 +1,13 @@
+node_modules/
+.env
+*.log
+coverage/
+.nyc_output/
+dist/
+.vscode/
+.idea/
+*.tsbuildinfo
+
+# Docker
+docker-compose.override.yml
+
