@@ -5,10 +5,13 @@ dotenv.config();
 
 const connectDB = async (): Promise<void> => {
     try {
-        const mongoUri = process.env.MONGODB_URI;
+        let mongoUri = process.env.MONGODB_URI;
         if (!mongoUri) {
             throw new Error('MONGODB_URI is not defined in environment variables');
         }
+
+        mongoUri = mongoUri.replace(/[?&]authSource=(?=&|$)/, '');
+        mongoUri = mongoUri.replace(/[?&]$/, '');
 
         const conn = await mongoose.connect(mongoUri, {
 
