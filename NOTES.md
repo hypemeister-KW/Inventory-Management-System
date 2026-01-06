@@ -39,6 +39,17 @@ Why MongoDB instead of lowdb? Lowdb would be simpler (JSON file), but MongoDB gi
 
 MongoDB also fits better with CQRS - easier to do read models, aggregates etc. In production I'd probably consider PostgreSQL for ACID transactions, but MongoDB is fine for this case.
 
+The database is set up using Docker Compose. The docker-compose.yml file configures MongoDB 7.0 with:
+- Root username: admin
+- Root password: admin123
+- Default database: inventory-management
+- Port: 27017
+
+To start the database, run `docker-compose up -d`. The connection string for this setup is:
+`mongodb://admin:admin123@localhost:27017/inventory-management?authSource=admin`
+
+For tests, I use a separate test database inventory-management-test to avoid conflicts with development data.
+
 ### Project structure
 
 ```
