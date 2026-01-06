@@ -3,6 +3,7 @@ module.exports = {
     testEnvironment: 'node',
     roots: ['<rootDir>/src', '<rootDir>/tests'],
     testMatch: ['**/tests/**/*.test.ts'],
+    setupFiles: ['<rootDir>/tests/setup.ts'],
     transform: {
         '^.+\\.ts$': 'ts-jest',
     },
@@ -19,5 +20,6 @@ module.exports = {
     ],
     moduleFileExtensions: ['ts', 'js', 'json'],
     coverageDirectory: 'coverage',
-    verbose: true
+    verbose: true,
+    maxWorkers: 1
 };

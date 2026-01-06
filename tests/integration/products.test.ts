@@ -69,8 +69,7 @@ describe('Products API Integration Tests', () => {
 
     describe('GET /products', () => {
         it('should retrieve all products', async () => {
-            // Create test products
-            await Product.create([
+            const products = await Product.create([
                 { name: 'Product 1', description: 'Desc 1', price: 10, stock: 50 },
                 { name: 'Product 2', description: 'Desc 2', price: 20, stock: 30 }
             ]);
@@ -82,6 +81,7 @@ describe('Products API Integration Tests', () => {
             expect(response.body.success).toBe(true);
             expect(response.body.count).toBe(2);
             expect(response.body.data).toHaveLength(2);
+            expect(products).toHaveLength(2);
         });
     });
 
@@ -104,7 +104,7 @@ describe('Products API Integration Tests', () => {
         });
 
         it('should return error for invalid product ID', async () => {
-            const response = await request(app)
+            await request(app)
                 .post('/products/invalid-id/restock')
                 .send({ quantity: 25 })
                 .expect(400);
@@ -137,13 +137,15 @@ describe('Products API Integration Tests', () => {
                 stock: 10
             });
 
-            const response = await request(app)
-                .post(`/products/${product._id}/sell`)
-                .send({ quantity: 15 })
-                .expect(500); // Will be caught by error handler
+            const productId = product._id.toString();
 
-            // Verify stock was not decreased
-            const updatedProduct = await Product.findById(product._id);
+            await request(app)
+                .post(`/products/${productId}/sell`)
+                .send({ quantity: 15 })
+                .expect(400);
+
+            const updatedProduct = await Product.findById(productId);
+            expect(updatedProduct).toBeDefined();
             expect(updatedProduct?.stock).toBe(10);
         });
     });

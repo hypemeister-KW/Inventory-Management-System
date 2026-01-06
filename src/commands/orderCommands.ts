@@ -20,12 +20,12 @@ export const createOrder = async (orderData: CreateOrderDto): Promise<IOrder> =>
     for (const item of products) {
         const product = await Product.findById(item.productId);
         if (!product) {
-            throw new Error(`Product with ID ${item.productId} not found`);
+            throw new Error('Product not found');
         }
 
         const stockCheck = await stockService.checkStockAvailability(item.productId, item.quantity);
         if (!stockCheck.available) {
-            throw new Error(`Insufficient stock for product ${product.name}. Available: ${product.stock}, Requested: ${item.quantity}`);
+            throw new Error('Insufficient stock');
         }
 
         orderItems.push({

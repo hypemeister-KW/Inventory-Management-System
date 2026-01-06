@@ -84,8 +84,8 @@ const createOrderSchema = Joi.object({
 });
 
 const validate = (schema: Joi.ObjectSchema) => {
-    return (req: Request, res: Response, next: NextFunction) => {
-        const { error } = schema.validate(req.body, { abortEarly: false });
+    return (_req: Request, res: Response, next: NextFunction): void => {
+        const { error } = schema.validate(_req.body, { abortEarly: false });
 
         if (error) {
             const errors = error.details.map(detail => ({
@@ -93,25 +93,27 @@ const validate = (schema: Joi.ObjectSchema) => {
                 message: detail.message
             }));
 
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Validation error',
                 errors
             });
+            return;
         }
 
         next();
     };
 };
 
-export const validateObjectId = (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
+export const validateObjectId = (_req: Request, res: Response, next: NextFunction): void => {
+    const { id } = _req.params;
 
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-        return res.status(400).json({
+        res.status(400).json({
             success: false,
             message: 'Invalid product ID format'
         });
+        return;
     }
 
     next();

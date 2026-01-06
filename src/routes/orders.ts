@@ -5,7 +5,7 @@ import { validateCreateOrder, validateObjectId } from '../middleware/validators'
 
 const router = express.Router();
 
-router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/', async (_req: Request, res: Response, next: NextFunction) => {
     try {
         const orders = await orderQueries.getAllOrders();
         res.status(200).json({

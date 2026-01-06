@@ -50,6 +50,10 @@ describe('Orders API Integration Tests', () => {
                 category: 'clothing'
             }
         ]);
+
+        // Refresh references to ensure they're valid
+        testCustomer = await Customer.findById(testCustomer._id);
+        testProducts = await Product.find({ _id: { $in: testProducts.map((p: any) => p._id) } });
     });
 
     describe('POST /orders', () => {
@@ -99,14 +103,14 @@ describe('Orders API Integration Tests', () => {
             const orderData = {
                 customerId: testCustomer._id.toString(),
                 products: [
-                    { productId: testProducts[0]._id.toString(), quantity: 200 } // More than available stock
+                    { productId: testProducts[0]._id.toString(), quantity: 200 }
                 ]
             };
 
             const response = await request(app)
                 .post('/orders')
                 .send(orderData)
-                .expect(500);
+                .expect(400);
 
             expect(response.body.success).toBe(false);
             expect(response.body.message).toContain('Insufficient stock');
@@ -123,7 +127,7 @@ describe('Orders API Integration Tests', () => {
             const response = await request(app)
                 .post('/orders')
                 .send(orderData)
-                .expect(500);
+                .expect(404);
 
             expect(response.body.success).toBe(false);
             expect(response.body.message).toContain('Customer not found');
@@ -151,7 +155,8 @@ describe('Orders API Integration Tests', () => {
 
             const createResponse = await request(app)
                 .post('/orders')
-                .send(orderData);
+                .send(orderData)
+                .expect(201);
 
             const orderId = createResponse.body.data._id;
 

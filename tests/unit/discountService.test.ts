@@ -58,7 +58,7 @@ describe('Discount Service', () => {
             const result = await discountService.calculateDiscounts(
                 1000, // subtotal
                 50,   // totalQuantity (30% volume discount)
-                [{ productId: '123', quantity: 50, unitPrice: 20 }],
+                [{ productId: '123' }],
                 'US'
             );
 
@@ -68,17 +68,17 @@ describe('Discount Service', () => {
         });
 
         it('should apply seasonal discount when higher than volume', async () => {
-            // Mock Black Friday
             const originalDate = Date;
-            global.Date = jest.fn(() => new originalDate('2024-11-29')) as any;
-            global.Date.prototype = originalDate.prototype;
+            const mockDate = new originalDate('2024-11-29');
+            global.Date = jest.fn(() => mockDate) as any;
+            Object.setPrototypeOf(global.Date, originalDate);
 
             (Product.find as jest.Mock).mockResolvedValue([]);
 
             const result = await discountService.calculateDiscounts(
                 1000, // subtotal
                 3,    // totalQuantity (no volume discount)
-                [{ productId: '123', quantity: 3, unitPrice: 333.33 }],
+                [{ productId: '123' }],
                 'US'
             );
 
@@ -95,7 +95,7 @@ describe('Discount Service', () => {
             const result = await discountService.calculateDiscounts(
                 1000, // subtotal
                 3,    // totalQuantity
-                [{ productId: '123', quantity: 3, unitPrice: 333.33 }],
+                [{ productId: '123' }],
                 'Europe'
             );
 
@@ -109,7 +109,7 @@ describe('Discount Service', () => {
             const result = await discountService.calculateDiscounts(
                 100,  // subtotal
                 50,   // totalQuantity
-                [{ productId: '123', quantity: 50, unitPrice: 2 }],
+                [{ productId: '123' }],
                 'US'
             );
 

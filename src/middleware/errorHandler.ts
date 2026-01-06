@@ -12,9 +12,9 @@ interface ErrorWithStatus extends Error {
 
 const errorHandler = (
     err: ErrorWithStatus,
-    req: Request,
+    _req: Request,
     res: Response,
-    next: NextFunction
+    _next: NextFunction
 ): Response => {
     let statusCode = err.statusCode || 500;
     let message = err.message || 'Internal Server Error';
@@ -42,11 +42,11 @@ const errorHandler = (
         message = 'Resource already exists';
     }
 
-    if (err.message === 'Product not found' || err.message === 'Customer not found' || err.message === 'Order not found') {
+    if (err.message === 'Product not found' || err.message === 'Customer not found' || err.message === 'Order not found' || err.message.includes('not found')) {
         statusCode = 404;
     }
 
-    if (err.message === 'Insufficient stock') {
+    if (err.message === 'Insufficient stock' || err.message.includes('Insufficient stock')) {
         statusCode = 400;
     }
 

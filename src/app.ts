@@ -9,7 +9,9 @@ dotenv.config();
 
 const app = express();
 
-connectDB();
+if (process.env.NODE_ENV !== 'test') {
+    connectDB();
+}
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -17,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
 
-app.get('/health', (req: Request, res: Response) => {
+app.get('/health', (_req: Request, res: Response) => {
     res.status(200).json({
         status: 'OK',
         message: 'Server is running',
@@ -25,7 +27,7 @@ app.get('/health', (req: Request, res: Response) => {
     });
 });
 
-app.use((req: Request, res: Response) => {
+app.use((_req: Request, res: Response) => {
     res.status(404).json({
         success: false,
         message: 'Route not found'
@@ -37,9 +39,11 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
 
 export default app;
 

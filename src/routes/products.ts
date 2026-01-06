@@ -10,7 +10,7 @@ import {
 
 const router = express.Router();
 
-router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/', async (_req: Request, res: Response, next: NextFunction) => {
     try {
         const products = await productQueries.getAllProducts();
         res.status(200).json({
