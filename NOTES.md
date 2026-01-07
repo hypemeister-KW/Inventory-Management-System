@@ -1,3 +1,41 @@
+## Setup & Running
+
+To get the application running:
+
+1. Install dependencies:
+   ```
+   npm install
+   ```
+
+2. Start MongoDB using Docker Compose:
+   ```
+   docker-compose up -d
+   ```
+
+3. Set up environment variables. Create a `.env` file in the root directory with:
+   ```
+   MONGODB_URI=mongodb://admin:admin123@localhost:27017/inventory-management?authSource=admin
+   PORT=3000
+   NODE_ENV=development
+   ```
+
+4. Run the application in development mode:
+   ```
+   npm run dev
+   ```
+
+   Or build and run in production mode:
+   ```
+   npm run build
+   npm start
+   ```
+
+5. Run tests:
+   ```
+   npm test
+   ```
+
+The API will be available at `http://localhost:3000`. Health check endpoint: `GET /health`
 
 ## Assumptions & Simplifications
 
