@@ -1,4 +1,4 @@
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export type ProductCategory = 'electronics' | 'clothing' | 'food' | 'books' | 'other';
 export type CustomerLocation = 'US' | 'Europe' | 'Asia';
@@ -23,13 +23,13 @@ export interface ICustomer extends Document {
 }
 
 export interface IOrderItem {
-    productId: string;
+    productId: Types.ObjectId | string;
     quantity: number;
     unitPrice: number;
 }
 
 export interface IOrder extends Document {
-    customerId: string;
+    customerId: Types.ObjectId | string;
     products: IOrderItem[];
     subtotal: number;
     discount: number;

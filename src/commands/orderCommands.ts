@@ -109,7 +109,7 @@ export const createOrder = async (orderData: CreateOrderDto): Promise<IOrder> =>
         const discountInfo = await discountService.calculateDiscounts(
             subtotal,
             totalQuantity,
-            orderItems,
+            orderItems.map(item => ({ productId: item.productId.toString() })),
             customer.location
         );
 
@@ -142,7 +142,7 @@ export const createOrder = async (orderData: CreateOrderDto): Promise<IOrder> =>
 
         try {
             await stockService.updateStockForOrder(
-                orderItems.map(item => ({ productId: item.productId, quantity: item.quantity })),
+                orderItems.map(item => ({ productId: item.productId.toString(), quantity: item.quantity })),
                 session
             );
         } catch (error: any) {
@@ -150,7 +150,7 @@ export const createOrder = async (orderData: CreateOrderDto): Promise<IOrder> =>
                 session = undefined;
                 useTransaction = false;
                 await stockService.updateStockForOrder(
-                    orderItems.map(item => ({ productId: item.productId, quantity: item.quantity })),
+                    orderItems.map(item => ({ productId: item.productId.toString(), quantity: item.quantity })),
                     undefined
                 );
             } else {

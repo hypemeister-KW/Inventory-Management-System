@@ -6,7 +6,7 @@ const orderItemSchema = new Schema<IOrderItem>({
         type: Schema.Types.ObjectId,
         ref: 'Product',
         required: true
-    } as any, // TODO: temporary fix for the type error
+    },
     quantity: {
         type: Number,
         required: true,
@@ -23,7 +23,7 @@ const orderSchema = new Schema<IOrder>({
         type: Schema.Types.ObjectId,
         ref: 'Customer',
         required: true
-    } as any, // TODO: temporary fix for the type error
+    },
     products: [orderItemSchema],
     subtotal: {
         type: Number,
